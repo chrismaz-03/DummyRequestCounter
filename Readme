@@ -1,0 +1,2 @@
+Redis data persist in a named volume: 'redis-data'.
+Services communicate via a custom network: 'app-net'.

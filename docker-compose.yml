@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    working_dir: /app
+    command: uvicorn app.app:app --host 0.0.0.0 --port 8000
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    networks:
+      - app-net
+
+  redis:
+    image: redis:7
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-net
+
+volumes:
+  redis-data:
+
+networks:
+  app-net:
+    driver: bridge
