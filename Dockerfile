@@ -2,14 +2,14 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project
-COPY . .
+COPY app/ ./app
 
-EXPOSE 8000
+WORKDIR /app/app
 
-# Run FastAPI app with Uvicorn
-CMD ["uvicorn", "app.app:app", "--host", "0.0.0.0", "--port", "8000"]
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000", "--reload"]

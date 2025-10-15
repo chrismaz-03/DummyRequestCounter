@@ -37,7 +37,8 @@ Thumbs.db
 
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 .env
-*.log
 venv/
-docker-compose.override.yml
+.DS_Store

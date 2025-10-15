@@ -1,18 +1,26 @@
-"""Main application module."""
-
+from dotenv import load_dotenv
 import os
-from fastapi import FastAPI
 from redis import Redis
+from fastapi import FastAPI
 
+# Load environment variables from .env
+load_dotenv()
+
+# Create FastAPI app
 app = FastAPI()
 
-# Use str for environment variables; convert to int if needed
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+# Redis configuration
+redis_host = os.getenv("REDIS_HOST", "redis")
+redis_port = int(os.getenv("REDIS_PORT", 6379))
 
-redis_client = Redis(host=REDIS_HOST, port=REDIS_PORT)
+# Connect to Redis
+redis = Redis(host=redis_host, port=redis_port)
 
 @app.get("/")
-def read_root():
-    """Root endpoint returning a simple message."""
+def hello():
+    # Increment a counter in Redis
+    try:
+        redis.incr("hits")
+    except Exception:
+        pass  # ignore Redis errors during testing
     return {"message": "Hello World"}

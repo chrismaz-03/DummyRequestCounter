@@ -1,6 +1,7 @@
-fastapi
-uvicorn[standard]
-pydantic
-redis==4.5.0
-pytest==7.4.2
-requests==2.32.0
+fastapi==0.111.1
+uvicorn[standard]==0.23.2
+redis==5.2.0
+pydantic==2.6.0
+python-dotenv==1.0.0
+pytest==8.4.2
+pytest-asyncio==0.21.0
