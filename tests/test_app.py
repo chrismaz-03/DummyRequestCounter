@@ -1,9 +1,12 @@
+"""Unit tests for the FastAPI app."""
+
 from fastapi.testclient import TestClient
-from app import app  # ton FastAPI app
+from app.app import app
 
 client = TestClient(app)
 
-def test_root():
+def test_read_root():
+    """Test the root endpoint."""
     response = client.get("/")
     assert response.status_code == 200
-    assert "DummyRequestCounter" in response.text
+    assert response.json() == {"message": "Hello World"}
