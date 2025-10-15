@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  IMAGE_NAME: ${{ github.repository }}   # override if you want e.g. yourhubuser/dummyrequestcounter
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   lint:
@@ -31,6 +31,11 @@ jobs:
       - name: Run flake8
         run: |
           if command -v flake8 >/dev/null 2>&1; then flake8 || exit 1; fi
+      - name: Code analysis
+        run: |
+          pip install pylint bandit
+          pylint **/*.py
+          bandit -r .
 
   test:
     name: Tests (unit)
@@ -56,7 +61,7 @@ jobs:
         run: pytest -q
 
   build-and-push:
-    name: Build and Push Docker image
+    name: Build, Test, and Push Docker image
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main'
@@ -71,7 +76,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and push
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-app:latest .
+      - name: Test Docker container
+        run: |
+          docker run --rm ${{ secrets.DOCKER_USERNAME }}/my-app:latest python --version
+      - name: Push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
